@@ -214,6 +214,8 @@ Now our json is available at either `/post.json` or `/post/.json`.
 ]
 ```
 
+[I use slightly different config than this.](/nginx)
+
 Neat! If you ever need something more specialized than this,
 consider modify nginx source code, or create nginx module.
 Or just create your own web server, using Go or such.
