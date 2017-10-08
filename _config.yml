@@ -20,6 +20,7 @@ exclude:
   - firebase.json
   - package.json
   - package-lock.json
+  - dotfiles/.vim
 kramdown:
   hard_wrap: true
 incremental: true
