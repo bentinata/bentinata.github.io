@@ -7,6 +7,7 @@ variables:
 pages:
   stage: deploy
   script:
+    - sed -i 's/permalink: \/.*/&\//' _config.yml
     - jekyll build -d public
   artifacts:
     paths:
