@@ -1,0 +1,8 @@
+.public/
+
+# Languange & tool crumbs.
+node_modules/
+package-lock.json
+Gemfile.lock
+.jekyll-metadata
+
