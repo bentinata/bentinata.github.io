@@ -1,44 +1,49 @@
 :root {
-  --c0: #140c1c;
-  --c1: #d04648;
-  --c2: #346524;
-  --c3: #d27d2c;
-  --c4: #30346d;
-  --c5: #442434;
-  --c6: #6dc2ca;
-  --c7: #deeed6;
-  --c8: #4e4a4e;
-  --c9: #d2aa99;
-  --cA: #6daa2c;
-  --cB: #dad45e;
-  --cC: #597dce;
-  --cD: #854c30;
-  --cE: #8595a1;
-  --cF: #757161;
+  --c0: #000000;
+  --c1: #be2633;
+  --c2: #44891a;
+  --c3: #eb8931;
+  --c4: #1b2632;
+  --c5: #493c2b;
+  --c6: #31a2f2;
+  --c7: #ffffff;
+  --c8: #2f484e;
+  --c9: #e06f8b;
+  --cA: #a3ce27;
+  --cB: #f7e26b;
+  --cC: #005784;
+  --cD: #a46422;
+  --cE: #b2dcef;
+  --cF: #9d9d9d;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 html {
-  background: black;
+  background: var(--c0);
   color: var(--c7);
   font-family: sans-serif;
+  max-width: 80ch;
+}
+
+html, object, img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 blockquote {
   padding-left: 1em;
-  border-left: 4px solid var(--c2);
+  border-left: 4px solid var(--cA);
+}
+
+p code {
+  white-space: nowrap;
 }
 
 code {
   color: var(--cA);
   font-family: monospace;
-}
-
-ul.love {
-  list-style: none;
-  padding: 0;
-}
-
-ul.love>li:before {
-  content: '♥ ';
-  color: var(--c1);
 }
