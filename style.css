@@ -17,21 +17,28 @@
   --cF: #9d9d9d;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-html {
+body {
+  margin: 0 auto;
+  max-width: 80ch;
+  padding: 0 .4em;
+  font: 1em/1.4 sans-serif;
   background: var(--c0);
   color: var(--c7);
-  font-family: sans-serif;
-  max-width: 80ch;
 }
 
-html, object, img {
+@media (min-width: 768px) {
+  body {
+    font: 1.2em/1.6 sans-serif;
+  }
+}
+
+object, img {
+  margin: 0 auto;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+}
+
+h1 {
+  line-height: 1.2;
 }
 
 blockquote {
@@ -45,5 +52,5 @@ p code {
 
 code {
   color: var(--cA);
-  font-family: monospace;
+  font: 1em monospace;
 }
