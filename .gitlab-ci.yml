@@ -16,10 +16,10 @@ pages:
     - git add .
     - git commit -m "Latest GitLab build."
     - git remote add github $GITHUB_URL
-    - git push -f github HEAD:page
+    - git push -f github HEAD:master
     - rm -rf .git
   artifacts:
     paths:
       - public
   only:
-    - master
+    - source
