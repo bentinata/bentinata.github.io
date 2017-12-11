@@ -1,8 +1,7 @@
-image: jekyll/minimal:3
+image: jekyll/jekyll:3
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
-  JEKYLL_ENV: production
 
 pages:
   stage: deploy
@@ -10,6 +9,15 @@ pages:
     - ! 'sed -i "s/permalink: \/.*/&\//" _config.yml'
     - bundle install
     - bundle exec jekyll build -d public
+    - cd public
+    - git init
+    - git config user.name "$GITLAB_USER_NAME"
+    - git config user.email "$GITLAB_USER_EMAIL"
+    - git add .
+    - git commit -m "Latest GitLab build."
+    - git remote add github $GITHUB_URL
+    - git push -f github HEAD:page
+    - rm -rf .git
   artifacts:
     paths:
       - public
