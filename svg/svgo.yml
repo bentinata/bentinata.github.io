@@ -1,0 +1,8 @@
+full: true
+js2svg:
+  pretty: true
+  indent: '  '
+plugins:
+  - minifyStyles: false
+  - convertStyleToAttrs: false
+  - removeViewBox

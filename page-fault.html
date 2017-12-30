@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PF</title>
+    <link rel="shortcut icon" href="/favicon.png">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/font-hack/2.020/css/hack.min.css">
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <form>
+      <input id="sequence" pattern="[a-p]+" placeholder="Use a-p. Or you can press randomize." value="cadbebabcd"></input>
+      <button>Randomize</button>
+      <select id="method">
+        <option>Optimal</option>
+        <option>Least Recently Used</option>
+      </select>
+    </form>
+
+    <table id="table">
+      <thead>
+        <td>t</td>
+        <td>0</td>
+        <td>1</td>
+        <td>2</td>
+        <td>3</td>
+      </thead>
+    </table>
+
+    <div>
+      references:
+      <br><a href="http://www.read.cs.ucla.edu/111/2006fall/notes/lec11">Paul Torrez, Tim Hallner, Kiran Mathrani, Anu Bashkar. "Lecture 11 notes". 10 December 2006</a>
+      <br><a href="http://www.cs.utexas.edu/users/witchel/372/lectures/16.PageReplacementAlgos.pdf">Tannenbaum. "Page Replacement Algorithms". 2004</a>
+      <br><a href="http://ijetch.org/papers/218-T697.pdf">Amit S. Chavan, Kartik R. Nayak, Keval D. Vora, Manish D. Purohit and Pramila M. Chawan. "A Comparison of Page Replacement Algorithms". April 2011</a>
+      <div>
+        <script src="/page-fault.js"></script>
+        <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script>
+const seq = Array.from(document.getElementById(`sequence`).value)
+const table = document.getElementById(`table`)
+
+function animate(seq) {
+  console.log(seq)
+  interval = 200;
+  let t = 1;
+  const clock = setInterval(() => {
+    const page = seq.shift()
+
+    const tr = document.createElement(`tr`)
+    const td = document.createElement(`td`)
+    td.appendChild(document.createTextNode(t))
+    tr.appendChild(td)
+
+    for (let i = 0; i < page.length; i++) {
+      const td = document.createElement(`td`)
+      td.appendChild(document.createTextNode(page[i]))
+      tr.appendChild(td)
+    }
+
+    table.appendChild(tr)
+
+    if (!seq.length) clearInterval(clock)
+    t += 1;
+  }, 200)
+}
+
+animate(optimal(seq))
+
+        </script>
+  </body>
+</html>

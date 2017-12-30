@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Nginx Virtual Host</title>
+<link rel="shortcut icon" href="/favicon.png">
+<link rel="stylesheet" href="/style.css">
+
+<p>For a <em>part</em> time web developer (like me), an multi-purpose tool is valuable.
+Kinda like Swiss army knife. Doesn't need to be perfect, just good enough.
+I'm using nginx, and I want it to be able to:</p>
+<ul>
+  <li>Do flexible routing</li>
+  <li>Serve indexed directory content in html</li>
+  <li>Serve JSON representation of directory content</li>
+</ul>
+
+<h1 id="flexible-routing">Flexible routing</h1>
+
+<p>This is pretty easy.</p>
+
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">server</span> <span class="p">{</span>
+  <span class="kn">root</span> <span class="n">/path/to/site</span><span class="p">;</span>
+  <span class="kn">try_files</span> <span class="nv">$uri</span> <span class="nv">$uri</span><span class="s">.html</span> <span class="nv">$uri</span><span class="n">/</span> <span class="p">=</span><span class="mi">404</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>To remind you back some of the nginx default settings:</p>
+<ul>
+  <li>listen to any host at port 80</li>
+  <li>serve file named index.html if requested path is folder</li>
+  <li>logs nowhere if you haven't create logs dir</li>
+</ul>
+
+<p>This is a development environment, it's ok to rely on default values.</p>
+
+<p>Suppose, I have a dir structure of:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>|-  index.html
+|-  pages.html
+|-  style.css
+|-  post/
+|   |-  nginx.html
+|   |-  oct.html
+| 
+|-  talk/
+    |-  index.html
+    |-  image.png
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>request</th>
+      <th>returned file</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">/</code></td>
+      <td>index.html</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">/pages</code></td>
+      <td>pages.html</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">/style.css</code></td>
+      <td>style.css</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">/post</code></td>
+      <td>403</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">/post/nginx</code></td>
+      <td>post/nginx.html</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">/talk</code></td>
+      <td>talk/index.html</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">/talk/image.png</code></td>
+      <td>talk/image.png</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="highlighter-rouge">try_files</code> order do matter!
+If there's a file named talk.html on the root dir;
+that would get served first instead of talk/index.html.
+So, if there's a need to request the latter file,
+it should referenced by using full path: <code class="highlighter-rouge">/talk/index.html</code>
+Should've fix the greater problem, though:</p>
+<blockquote>
+  <p>Why there's two conflicting file path?</p>
+</blockquote>
+
+<p>Also, the <code class="highlighter-rouge">/post</code> endpoint would return 403.
+Which isn't quite right; should've been 404.
+But we know there's nothing in <code class="highlighter-rouge">/post</code> anyway. :)</p>
+
+<h1 id="serve-indexed-content">Serve indexed content</h1>
+
+<p>This is also trivial. Just add <code class="highlighter-rouge">autoindex on</code> line;
+Or, you could use module <a href="https://github.com/aperezdc/ngx-fancyindex#directives">fancyindex</a>!</p>
+
+<p>Now, the then-erred <code class="highlighter-rouge">/post</code> endpoint would serve post/ content instead! Neato.
+But, then another problem arrive.</p>
+<blockquote>
+  <p>What if I want to serve directory content index with <code class="highlighter-rouge">index.html</code> present?</p>
+</blockquote>
+
+<p>We could use <strong>virtual host</strong>!</p>
+
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">server</span> <span class="p">{</span>
+  <span class="kn">listen</span> <span class="mi">127</span><span class="s">.0.0.1</span><span class="p">;</span>
+  <span class="kn">server_name</span> <span class="s">index</span><span class="p">;</span>
+  <span class="kn">root</span> <span class="nv">$http_root</span><span class="p">;</span>
+  <span class="kn">default_type</span> <span class="nc">application/html</span><span class="p">;</span>
+  <span class="kn">index</span> <span class="s">null</span><span class="p">;</span>
+  <span class="kn">autoindex</span> <span class="no">on</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">server</span> <span class="p">{</span>
+  <span class="kn">root</span> <span class="n">/path/to/site</span><span class="p">;</span>
+  <span class="kn">try_files</span> <span class="nv">$uri</span> <span class="nv">$uri</span><span class="s">.html</span> <span class="nv">$uri</span><span class="n">/</span> <span class="p">=</span><span class="mi">404</span><span class="p">;</span>
+  <span class="kn">autoindex</span> <span class="no">on</span><span class="p">;</span>
+
+  <span class="kn">location</span> <span class="p">~</span> <span class="sr">(?&lt;path&gt;.*?)\/?\.index</span> <span class="p">{</span>
+    <span class="kn">try_files</span> <span class="nv">$uri</span> <span class="s">@index</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kn">location</span> <span class="s">@index</span> <span class="p">{</span>
+    <span class="kn">proxy_set_header</span> <span class="s">Root</span> <span class="nv">$document_root</span><span class="p">;</span>
+    <span class="kn">proxy_set_header</span> <span class="s">Host</span> <span class="s">"index"</span><span class="p">;</span>
+    <span class="kn">proxy_pass</span> <span class="s">http://127.0.0.1</span><span class="nv">$path</span><span class="n">/</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now directory index is accessible by using it's path appended by ".index".
+For example, <code class="highlighter-rouge">/post.index</code> or <code class="highlighter-rouge">/post/.index</code>.
+Both of two endpoint above would resolve to the same thing.</p>
+
+<h2 id="what-happens-here">What happens here?</h2>
+
+<p>First we match any url ends with ".index", and put it into $path variable.
+If you happen to use more than one location block, put regex block before other.
+Commonly used block is <code class="highlighter-rouge">location /</code> block, put regex block before.
+Regex block would just ignored if there's any other matching location.
+Even if that block wouldn't resolve to anything.</p>
+
+<p>Afterwards we put <code class="highlighter-rouge">try_files</code> inside regex block,
+ensuring it would resolve to any existing file before reference to index block.</p>
+
+<p>Then, we have another block, but this is named block.
+This kind of block wouldn't resolve any path, must be referenced.
+Inside this block, we proxy passing to index vhost, which is already defined.
+We're still passing request to 127.0.0.1 (or localhost), but nginx
+differentiate server by server_name. This is our index virtual host.
+(Might be called by other name though.)
+We also add "Root" header.</p>
+
+<p>Finally, index virtual host would return autoindexed path.
+nginx will take any header in form of variable named <code class="highlighter-rouge">$http_[variable]</code>;
+with <code class="highlighter-rouge">[variable]</code> being normalized http header.
+Define <code class="highlighter-rouge">index null</code>, so any index.html file (which is default value) is ignored.
+Only listen to 127.0.0.1, so people don't tamper with request.
+If listen left to default value, anyone in the network could just send request
+to index virtual host, and possible with header <code class="highlighter-rouge">Root: /</code>.
+Giving read access to whole filesystem that's readable by nginx user process.
+You could remove it if <a href="https://xkcd.com/908">you don't know anybody like that</a> in your network though.</p>
+
+<p>Now, directory index could be accessible at three different endpoint:</p>
+<ul>
+  <li><code class="highlighter-rouge">/post/</code> (if there's no index.html file)</li>
+  <li><code class="highlighter-rouge">/post.index</code></li>
+  <li><code class="highlighter-rouge">/post/.index</code></li>
+</ul>
+
+<p>Dotfiles in url is a bit uncommon though.</p>
+
+<p>If somehow:</p>
+<ul>
+  <li>A file named index.html inside post/ directory exist</li>
+  <li>A file named .index inside post/ directory also exist</li>
+  <li>A file named post.index in the root directory exist</li>
+</ul>
+
+<p>Then you're out of luck.
+(Why would anyone do that though?)</p>
+
+<h1 id="serve-json">Serve JSON</h1>
+
+<p>Now that we understand virtual host. We could make another one!</p>
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">server</span> <span class="p">{</span>
+  <span class="kn">listen</span> <span class="mi">127</span><span class="s">.0.0.1</span><span class="p">;</span>
+  <span class="kn">server_name</span> <span class="s">json</span><span class="p">;</span>
+  <span class="kn">root</span> <span class="nv">$http_root</span><span class="p">;</span>
+  <span class="kn">default_type</span> <span class="nc">application/json</span><span class="p">;</span>
+  <span class="kn">index</span> <span class="s">null</span><span class="p">;</span>
+  <span class="kn">autoindex</span> <span class="no">on</span><span class="p">;</span>
+  <span class="kn">autoindex_format</span> <span class="s">json</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now using <code class="highlighter-rouge">autoindex_format json</code>, pretty self-explaining.
+From our main server block, just create another named location block.
+Then proxy pass to this virtual host.</p>
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">location</span> <span class="p">~</span> <span class="sr">(?&lt;path&gt;.*?)\/?\.json</span> <span class="p">{</span>
+  <span class="kn">try_files</span> <span class="nv">$uri</span> <span class="s">@json</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">location</span> <span class="s">@json</span> <span class="p">{</span>
+  <span class="kn">proxy_set_header</span> <span class="s">Root</span> <span class="nv">$document_root</span><span class="p">;</span>
+  <span class="kn">proxy_set_header</span> <span class="s">Host</span> <span class="s">"json"</span><span class="p">;</span>
+  <span class="kn">proxy_pass</span> <span class="s">http://127.0.0.1</span><span class="nv">$path</span><span class="n">/</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Basically the same block, with "index" replaced with "json", <code class="highlighter-rouge">s/index/json</code>.
+Or! You could modify existing named and regex location block.
+Capture the "extension" to another variable, and pass it to the "Host" header.
+Thankfully, our knife is configurable.</p>
+<div class="language-nginx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">location</span> <span class="p">~</span> <span class="sr">(?&lt;path&gt;.*?)\/?\.(?&lt;type&gt;index|json)</span> <span class="p">{</span>
+  <span class="kn">try_files</span> <span class="nv">$uri</span> <span class="s">@index</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">location</span> <span class="s">@index</span> <span class="p">{</span>
+  <span class="kn">proxy_set_header</span> <span class="s">Root</span> <span class="nv">$document_root</span><span class="p">;</span>
+  <span class="kn">proxy_set_header</span> <span class="s">Host</span> <span class="nv">$type</span><span class="p">;</span>
+  <span class="kn">proxy_pass</span> <span class="s">http://127.0.0.1</span><span class="nv">$path</span><span class="n">/</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now our json is available at either <code class="highlighter-rouge">/post.json</code> or <code class="highlighter-rouge">/post/.json</code>.</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="s2">"nginx.html"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"type"</span><span class="p">:</span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"mtime"</span><span class="p">:</span><span class="s2">"Sun, 08 Oct 2017 17:53:18 GMT"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"size"</span><span class="p">:</span><span class="mi">5639</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"oct.html"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"type"</span><span class="p">:</span><span class="s2">"file"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"mtime"</span><span class="p">:</span><span class="s2">"Fri, 06 Oct 2017 10:56:56 GMT"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"size"</span><span class="p">:</span><span class="mi">1218</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Neat! If you ever need something more specialized than this,
+consider modify nginx source code, or create nginx module.
+Or just create your own web server, using Go or such.</p>
+

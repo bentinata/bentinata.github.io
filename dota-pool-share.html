@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Share yours!</title>
+    <meta charset="utf-8">
+    <style>
+html {
+  margin: 0;
+  background-color: black;
+}
+
+.no {
+  opacity: 0.1;
+}
+    </style>
+  </head>
+  <body>
+    <div id="pool"></div>
+
+    <script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+const names = heroes => heroes.map(hero => hero.name.replace(`npc_dota_hero_`, ``))
+
+const load = heroes => {
+  heroes.forEach(name => {
+    $(`#pool`).append(`<img src="//cdn.dota2.com/apps/dota2/images/heroes/${name}_full.png"></img>`)
+  })
+
+  const no = location.hash.slice(1,location.hash.length).split(`-`).map(Number)
+
+    $(`img`).each((index, el) => {
+        if (no.indexOf(index) >= 0) $(el).toggleClass(`no`)
+    })
+}
+
+$(document).on(`click`, `img`, el => {
+  const img = $(el.target)
+    img.toggleClass(`no`)
+    location.hash = $(`img.no`)
+    .map((index, el) => $(el)
+      .index()
+    )
+    .toArray()
+    .join(`-`)
+})
+
+$.get(`https://api.opendota.com/api/heroes`)
+  .then(names)
+  .then(load)
+    </script>
+  </body>
+</html>

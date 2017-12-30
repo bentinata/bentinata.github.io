@@ -1,0 +1,56 @@
+:root {
+  --c0: #000000;
+  --c1: #be2633;
+  --c2: #44891a;
+  --c3: #eb8931;
+  --c4: #1b2632;
+  --c5: #493c2b;
+  --c6: #31a2f2;
+  --c7: #ffffff;
+  --c8: #2f484e;
+  --c9: #e06f8b;
+  --cA: #a3ce27;
+  --cB: #f7e26b;
+  --cC: #005784;
+  --cD: #a46422;
+  --cE: #b2dcef;
+  --cF: #9d9d9d;
+}
+
+body {
+  margin: 0 auto;
+  max-width: 80ch;
+  padding: 0 .4em;
+  font: 1em/1.4 sans-serif;
+  background: var(--c0);
+  color: var(--c7);
+}
+
+@media (min-width: 768px) {
+  body {
+    font: 1.2em/1.6 sans-serif;
+  }
+}
+
+object, img {
+  margin: 0 auto;
+  display: block;
+}
+
+h1 {
+  line-height: 1.2;
+}
+
+blockquote {
+  padding-left: 1em;
+  border-left: 4px solid var(--cA);
+}
+
+p code {
+  white-space: nowrap;
+}
+
+code {
+  color: var(--cA);
+  font: 1em monospace;
+}

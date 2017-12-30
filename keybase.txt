@@ -1,0 +1,63 @@
+==================================================================
+https://keybase.io/bentinata
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://bentinata.com
+  * I am bentinata (https://keybase.io/bentinata) on keybase.
+  * I have a public key with fingerprint F465 B2D5 E0F8 D9DC 9DFD  8591 61D8 D6FC 3273 FBC6
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0116e211244f0a8470aff68df8d9714f1e5873b8fce65467a8e4eb50998d9a152cb30a",
+      "fingerprint": "f465b2d5e0f8d9dc9dfd859161d8d6fc3273fbc6",
+      "host": "keybase.io",
+      "key_id": "61d8d6fc3273fbc6",
+      "kid": "0116e211244f0a8470aff68df8d9714f1e5873b8fce65467a8e4eb50998d9a152cb30a",
+      "uid": "b0306137574a0fa0b3d9affa6f542119",
+      "username": "bentinata"
+    },
+    "service": {
+      "hostname": "bentinata.com",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 1
+  },
+  "ctime": 1505758776,
+  "expire_in": 157680000,
+  "prev": "dc3a7b06daaad02010c35141a710a56bc46cdaf979fd669f52a511938f1359cb",
+  "seqno": 6,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+
+owGtkj1oFEEYhjd6QhJUrA5SWDhid8aZnb/di00sgpWQYKPNMb+XMbndc3fvvBCT
+QhGClTZaiGhjZSEIYqdiYWOaQBQFC1vBQsEiqFFnjqQRS6cZ5pvnfb/vHebGgb3R
+aF28e/szLn+8Gnn9SUbnXhw8uQxkrpdAcxksmOFmFrUpq9aC06AJIELMxAjFhFgo
+EsKhsJYl2iY65YhYZGjCsUysMowSxkViiJEUpqkHBKKxkhgK0ADWZW1TdAuXVd7W
+EkZlrKmBwUirVFud0BQxpBPNrMIxx1Yq5oXzeRkUfjgpSjPpcl/zh9ZwvH/w/3nu
+3tBOQgwZwpxyIqAVUGJPWSuYpcR3SQNYmiITHRNok1UuE5UAKw3gy32nTHjZEOVv
+ZFLlHa/uFnmVq3zRX81XVbdsBmm11A3sJSNbOy4t6TLtX9Ir+qYoXZ6BJvKkqlyw
+RRRS7oNx1gBm0HWFablAUM4S6FfoY/reUiss+HkJmRZCaBhDBBWmiCDBERSUSUWY
+0sKmPLWasdTSWFCfEycWYZoqCUKwi1kOmr5VJdres3RtH6hXGLAyvtarRfXR6HD9
+SO2befzm49b7D3e3r93c/Xz79oSfF42PHdqtvJwZibY3r2x8nmvDr8fOTKw/ej6Y
+mp5Zf3o73Zr9Fd/rHH9wIfo9e//O1bmN09Gg8SyZrp098WR1MPHw1K3Lq2vfN49+
+ub7/Dw==
+=iqXp
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/bentinata
+
+==================================================================
+
